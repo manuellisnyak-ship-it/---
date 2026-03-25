@@ -1,0 +1,42 @@
+using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.SceneManagement;
+
+public class MonsterAI : MonoBehaviour
+{
+    public NavMeshAgent agent;
+    public Transform player;
+    public float killDistance = 2.0f;
+    public GameObject jumpscareCanvas; // Панель зі скрімером
+
+    void Update()
+    {
+        // Монстр завжди знає, де ти (або додай логіку видимості)
+        agent.SetDestination(player.position);
+
+        // Перевірка дистанції для нападу
+        float distance = Vector3.Distance(transform.position, player.position);
+        if (distance <= killDistance)
+        {
+            CaughtPlayer();
+        }
+    }
+
+    void CaughtPlayer()
+    {
+        // Активуємо страшну картинку та звук
+        jumpscareCanvas.SetActive(true);
+        
+        // Зупиняємо гру на мить
+        Time.timeScale = 0.5f; 
+
+        // Перезавантаження рівня через 2 секунди
+        Invoke("RestartGame", 2.0f);
+    }
+
+    void RestartGame()
+    {
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+}
